@@ -164,3 +164,110 @@ when starting the car. it spins up, chucks a load of messages and then shuts up.
 19:39:53.684 -> 
 19:39:53.684 -> MBE_RECV_BAD_HEADER
 ```
+
+```
+21:01:14.791 -> /Users/JRAE15_1/projects/scan7/mbe.cpp:155 Send start
+21:01:14.791 -> [MBE] Sending message, length: 23
+21:01:14.791 -> [MBE] Multi-frame send, total length: 23
+21:01:14.791 -> /Users/JRAE15_1/projects/scan7/mbe.cpp:186 SENT: 10 17 01 00 00 00 00 f8 
+21:01:14.791 -> [MBE] Sending frame 1, length: 7
+21:01:14.791 -> /Users/JRAE15_1/projects/scan7/mbe.cpp:198 SENT: 21 36 37 44 45 50 51 64 
+21:01:14.791 -> [MBE] Sending frame 2, length: 7
+21:01:14.791 -> /Users/JRAE15_1/projects/scan7/mbe.cpp:198 SENT: 22 6a 6b 7c 7d 92 93 9e 
+21:01:14.791 -> [MBE] Sending frame 3, length: 3
+21:01:14.791 -> /Users/JRAE15_1/projects/scan7/mbe.cpp:198 SENT: 23 9f a3 a5 7d 92 93 9e 
+21:01:14.791 -> [MBE] Multi-frame send complete
+21:01:14.791 -> [MBE] Starting receive
+21:01:14.791 -> [MBE] Waiting for packet...
+21:01:14.791 -> [MBE] Packet available
+21:01:14.791 -> /Users/JRAE15_1/projects/scan7/mbe.cpp:236 RECV: 10 12 81 6f 3c cb 41 40 
+21:01:14.823 -> [MBE] Frame type: 0x10
+21:01:14.823 -> [MBE] First frame received, total expected: 18
+21:01:14.823 -> [MBE] Waiting for packet...
+21:01:14.823 -> [MBE] Packet available
+21:01:14.823 -> /Users/JRAE15_1/projects/scan7/mbe.cpp:280 RECV: 22 2b 80 99 00 cd 93 9e 
+21:01:14.823 -> /Users/JRAE15_1/projects/scan7/mbe.cpp:280 RECV: 21 17 00 b0 4f 00 00 80 
+21:01:14.823 -> [MBE] something went wrong
+21:01:14.823 -> [MBE] Frame 1 received, total so far: 13/18
+21:01:14.823 -> [MBE] Frame 2 received, total so far: 18/18
+21:01:14.823 -> [MBE] Multi-frame receive complete, total: 18
+21:01:14.823 -> /Users/JRAE15_1/projects/scan7/mbe.cpp:155 Send start
+21:01:14.823 -> [MBE] Sending message, length: 16
+21:01:14.823 -> [MBE] Multi-frame send, total length: 16
+21:01:14.823 -> /Users/JRAE15_1/projects/scan7/mbe.cpp:186 SENT: 10 10 01 00 00 00 00 f9 
+21:01:14.823 -> [MBE] Sending frame 1, length: 7
+21:01:14.823 -> /Users/JRAE15_1/projects/scan7/mbe.cpp:198 SENT: 21 98 99 b2 b3 ba bb bc 
+21:01:14.823 -> [MBE] Sending frame 2, length: 3
+21:01:14.823 -> /Users/JRAE15_1/projects/scan7/mbe.cpp:198 SENT: 22 bd d6 d7 b3 ba bb bc 
+21:01:14.823 -> [MBE] Multi-frame send complete
+21:01:14.823 -> [MBE] Starting receive
+21:01:14.823 -> [MBE] Waiting for packet...
+21:01:14.823 -> [MBE] Packet available
+21:01:14.823 -> /Users/JRAE15_1/projects/scan7/mbe.cpp:236 RECV: 10 0b 81 e8 03 00 00 78 
+21:01:14.823 -> [MBE] Frame type: 0x10
+21:01:14.823 -> [MBE] First frame received, total expected: 11
+21:01:14.823 -> [MBE] Waiting for packet...
+21:01:14.823 -> [MBE] Packet available
+21:01:14.823 -> /Users/JRAE15_1/projects/scan7/mbe.cpp:280 RECV: 21 1e dc 1e 7c 01 bb bc 
+21:01:14.823 -> [MBE] something went wrong
+21:01:14.823 -> [MBE] Frame 1 received, total so far: 11/11
+21:01:14.823 -> [MBE] Multi-frame receive complete, total: 11
+21:01:14.823 -> /Users/JRAE15_1/projects/scan7/mbe.cpp:155 Send start
+21:01:14.823 -> [MBE] Sending message, length: 18
+21:01:14.823 -> [MBE] Multi-frame send, total length: 18
+21:01:14.823 -> /Users/JRAE15_1/projects/scan7/mbe.cpp:186 SENT: 10 12 01 00 00 00 00 fd 
+21:01:14.823 -> [MBE] Sending frame 1, length: 7
+21:01:14.823 -> /Users/JRAE15_1/projects/scan7/mbe.cpp:198 SENT: 21 24 25 26 27 28 29 2a 
+21:01:14.823 -> [MBE] Sending frame 2, length: 5
+21:01:14.823 -> /Users/JRAE15_1/projects/scan7/mbe.cpp:198 SENT: 22 2b 34 35 45 73 29 2a 
+21:01:14.823 -> [MBE] Multi-frame send complete
+21:01:14.823 -> [MBE] Starting receive
+21:01:14.823 -> [MBE] Waiting for packet...
+21:01:14.823 -> [MBE] Packet available
+21:01:14.823 -> /Users/JRAE15_1/projects/scan7/mbe.cpp:236 RECV: 10 0d 81 08 00 0f 00 00 
+21:01:14.823 -> [MBE] Frame type: 0x10
+21:01:14.823 -> [MBE] First frame received, total expected: 13
+21:01:14.823 -> [MBE] Waiting for packet...
+21:01:14.823 -> [MBE] Packet available
+21:01:14.823 -> /Users/JRAE15_1/projects/scan7/mbe.cpp:280 RECV: 21 00 00 00 0e 00 01 00 
+21:01:14.823 -> [MBE] something went wrong
+21:01:14.823 -> [MBE] Frame 1 received, total so far: 13/13
+21:01:14.823 -> [MBE] Multi-frame receive complete, total: 13
+21:01:14.823 -> 21:01:14.823 -> --- ENGINE STATUS ---
+21:01:14.823 -> RPM: 0
+21:01:14.823 -> BAT: 11.99v
+21:01:14.823 -> WATER: 11.12c
+21:01:14.823 -> INTAKE: 7.77c
+21:01:14.823 -> T.IDLE: 1000
+21:01:14.823 -> BARO: 1.04b
+21:01:14.823 -> TPS: 0.00 0.45v
+21:01:14.823 -> LAMBDA: 2.05 0.85v
+21:01:14.823 -> TARGET: 0.00
+21:01:14.823 -> TRIM: -100.00%
+21:01:14.823 -> LAMBDA STATUS: 000e
+21:01:14.823 -> FAULTS A/B/C/D: 0008 000f 0000 0000
+21:01:14.823 -> E.SYNC: 00
+21:01:14.823 -> IDLE: 01
+21:01:14.823 -> RPM LIMITS - SOFT: 7800 HARD: 7900
+21:01:14.823 -> WARMUP: 39.90s
+21:01:14.823 -> -------------------
+
+21:01:14.919 -> --- ENGINE STATUS ---
+21:01:14.919 -> RPM: 0
+21:01:14.919 -> BAT: 11.99v
+21:01:14.919 -> WATER: 11.12c
+21:01:14.919 -> INTAKE: 7.77c
+21:01:14.919 -> T.IDLE: 1000
+21:01:14.919 -> BARO: 1.04b
+21:01:14.919 -> TPS: 0.00 0.45v
+21:01:14.919 -> LAMBDA: 2.05 0.84v
+21:01:14.919 -> TARGET: 0.00
+21:01:14.919 -> TRIM: -100.00%
+21:01:14.919 -> LAMBDA STATUS: 000e
+21:01:14.919 -> FAULTS A/B/C/D: 0008 000f 0000 0000
+21:01:14.919 -> E.SYNC: 00
+21:01:14.919 -> IDLE: 01
+21:01:14.919 -> RPM LIMITS - SOFT: 7800 HARD: 7900
+21:01:14.919 -> WARMUP: 39.90s
+21:01:14.919 -> -------------------
+```

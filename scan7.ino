@@ -47,7 +47,7 @@ void loop() {
 }
 
 void update() {
-  Serial.println("looop");
+  
   long t = millis();
   if (t - last_update_millis < UPDATE_INTERVAL_MILLIS) {
     return;

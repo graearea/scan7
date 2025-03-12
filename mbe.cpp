@@ -2,10 +2,10 @@
 #include <mcp_canbus.h>
 #include "mbe.h"
 
+#ifdef DEBUG_ENABLED
 #define DEBUG(msg, ...) Serial.printf("[MBE] " msg "\n", ##__VA_ARGS__)
-
 #define DEBUG_PKT(msg, buf, len) ({\
-        Serial.printf("[MBE] " msg " ");\
+        Serial.printf(__FILE__ ":%d %s: ", __LINE__, msg);\
         for (size_t _i=0; _i<len; _i++) {\
           Serial.printf("%02x ", buf[_i]);\
         }\
@@ -13,6 +13,12 @@
     })
 #define DEBUG_MSG(msg) (Serial.printf(__FILE__ ":%d %s\n", __LINE__, msg))
 #define DEBUG_ERR(code) (DEBUG_MSG(errors[code]))
+#else
+#define DEBUG(msg, ...)
+#define DEBUG_PKT(msg, buf, len)
+#define DEBUG_MSG(msg)
+#define DEBUG_ERR(code)
+#endif
 
 #define MBE_INIT_RETRIES (10)
 #define MBE_INIT_RETRY_DELAY_MS (100)
@@ -71,8 +77,6 @@ void mbe_flush();
 static uint8_t mbe_data[MBE_MAX_MESSAGE_SIZE] = { 0 };
 static size_t mbe_data_len = 0;
 
-// Add debug message helper
-
 mbe_error mbe_init() {
   DEBUG("Initializing CAN bus at %d kbps", MBE_CAN_RATE);
   int remaining = MBE_INIT_RETRIES;
@@ -90,6 +94,7 @@ mbe_error mbe_init() {
   CAN.init_Filt(0, 1, MBE_ID_MASK);
   CAN.init_Mask(1, 1, MBE_ID_ECU);
   CAN.init_Filt(1, 1, MBE_ID_MASK);
+
   DEBUG("Init complete");
 
   return MBE_OK;
@@ -232,13 +237,13 @@ mbe_error mbe_recv() {
     DEBUG("Read failed");
     return MBE_RECV_ERROR;
   }
-
   DEBUG_PKT("RECV", buf, 8);
-
   if (len < 2) {
     DEBUG("Invalid length: %d", len);
     return MBE_RECV_INVALID;
   }
+
+  DEBUG_PKT("RECV", buf, 8);
 
   uint8_t type = buf[0] & 0xf0;
   DEBUG("Frame type: 0x%x", type);
@@ -248,8 +253,8 @@ mbe_error mbe_recv() {
     memcpy(mbe_data, &buf[1], mbe_data_len);
     DEBUG("Single frame received, length: %d", mbe_data_len);
     return MBE_OK;
-  }
-
+  } 
+  
   if (type != ISOTP_FRAME_FIRST) {
     DEBUG("Invalid frame type: 0x%x", type);
     return MBE_RECV_BAD_HEADER;
@@ -274,7 +279,6 @@ mbe_error mbe_recv() {
       }
       for (int n=0; n<8; n++) {
         if (CAN.readMsgBuf(&lens[n], bufs[n]) != CAN_OK) {
-          DEBUG("something went wrong");
           break;
         }
         DEBUG_PKT("RECV", bufs[n], 8);
@@ -322,7 +326,7 @@ void mbe_flush() {
     if (CAN.readMsgBuf(&len, buf) == CAN_OK) {
       // DEBUG_PKT("FLUSH", buf, 8);
       flushed++;
-    }
+    }    
     //delay(1);
   }
   if (flushed > 0) {
