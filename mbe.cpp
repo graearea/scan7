@@ -62,6 +62,17 @@ static size_t mbe_data_len = 0;
 // Add debug message helper
 #define DEBUG(msg, ...) Serial.printf("[MBE] " msg "\n", ##__VA_ARGS__)
 
+
+#define DEBUG_PKT(msg, buf, len) ({\
+        Serial.printf(__FILE__ ":%d %s: ", __LINE__, msg);\
+        for (size_t _i=0; _i<len; _i++) {\
+          Serial.printf("%02x ", buf[_i]);\
+        }\
+        Serial.println("");\
+    })
+#define DEBUG_MSG(msg) (Serial.printf(__FILE__ ":%d %s\n", __LINE__, msg))
+#define DEBUG_ERR(code) (DEBUG_MSG(errors[code]))
+
 mbe_error mbe_init() {
   DEBUG("Initializing CAN bus at %d kbps", MBE_CAN_RATE);
   int remaining = MBE_INIT_RETRIES;
@@ -296,13 +307,14 @@ void mbe_flush() {
   while (CAN.checkReceive() == CAN_MSGAVAIL) {
     uint8_t len;
     uint8_t buf[8];
-    CAN.readMsgBuf(&len, buf);
-    DEBUG("Flushed frame [%d]: %02x %02x %02x %02x %02x %02x %02x %02x", 
-          flushed, buf[0], buf[1], buf[2], buf[3], buf[4], buf[5], buf[6], buf[7]);
-    flushed++;
+    if (CAN.readMsgBuf(&len, buf) == CAN_OK) {
+      DEBUG_PKT("FLUSH", buf, 8);
+      flushed++;
+    }    
     delay(1);
   }
   if (flushed > 0) {
+    DEBUG_MSG("Flushed messages");
     DEBUG("Flushed %d messages", flushed);
   }
 }
