@@ -2,6 +2,16 @@
 #include <mcp_canbus.h>
 #include "mbe.h"
 
+#define DEBUG_PKT(msg, buf, len) ({\
+        Serial.printf(__FILE__ ":%d %s: ", __LINE__, msg);\
+        for (size_t _i=0; _i<len; _i++) {\
+          Serial.printf("%02x ", buf[_i]);\
+        }\
+        Serial.println("");\
+    })
+#define DEBUG_MSG(msg) (Serial.printf(__FILE__ ":%d %s\n", __LINE__, msg))
+#define DEBUG_ERR(code) (DEBUG_MSG(errors[code]))
+
 #define MBE_INIT_RETRIES (10)
 #define MBE_INIT_RETRY_DELAY_MS (100)
 
@@ -61,17 +71,6 @@ static size_t mbe_data_len = 0;
 
 // Add debug message helper
 #define DEBUG(msg, ...) Serial.printf("[MBE] " msg "\n", ##__VA_ARGS__)
-
-
-#define DEBUG_PKT(msg, buf, len) ({\
-        Serial.printf(__FILE__ ":%d %s: ", __LINE__, msg);\
-        for (size_t _i=0; _i<len; _i++) {\
-          Serial.printf("%02x ", buf[_i]);\
-        }\
-        Serial.println("");\
-    })
-#define DEBUG_MSG(msg) (Serial.printf(__FILE__ ":%d %s\n", __LINE__, msg))
-#define DEBUG_ERR(code) (DEBUG_MSG(errors[code]))
 
 mbe_error mbe_init() {
   DEBUG("Initializing CAN bus at %d kbps", MBE_CAN_RATE);
@@ -150,6 +149,7 @@ mbe_error mbe_query(
 // *************************************************************************
 
 mbe_error mbe_send(const uint8_t* msg, const size_t len) {
+  DEBUG_MSG("Send start");
   if (len == 0 || len > 4095) {
     DEBUG("Send error: length %d out of bounds", len);
     return MBE_OUT_OF_BOUNDS;
@@ -166,6 +166,8 @@ mbe_error mbe_send(const uint8_t* msg, const size_t len) {
       DEBUG("Send failed");
       return MBE_SEND_ERROR;
     }
+    DEBUG_PKT("SEND", frame, 8);
+    DEBUG_MSG("Send complete");
     return MBE_OK;
   }
 
@@ -178,7 +180,7 @@ mbe_error mbe_send(const uint8_t* msg, const size_t len) {
     DEBUG("First frame send failed");
     return MBE_SEND_ERROR;
   }
-
+  DEBUG_PKT("SENT", frame, 8);
   size_t offset = 6;
   uint8_t idx = 1;
   while (offset < len) {
@@ -190,6 +192,7 @@ mbe_error mbe_send(const uint8_t* msg, const size_t len) {
       DEBUG("Frame %d send failed", idx);
       return MBE_SEND_ERROR;
     }
+    DEBUG_PKT("SENT", frame, 8);
     idx++;
     offset += n;
   }
@@ -216,6 +219,7 @@ mbe_error mbe_recv() {
   DEBUG("Starting receive");
   mbe_error err = mbe_wait();
   if (err != MBE_OK) {
+    DEBUG_ERR(err);
     return err;
   }
 
@@ -225,10 +229,13 @@ mbe_error mbe_recv() {
     DEBUG("Read failed");
     return MBE_RECV_ERROR;
   }
+  DEBUG_PKT("RECV", buf, 8);
   if (len < 2) {
     DEBUG("Invalid length: %d", len);
     return MBE_RECV_INVALID;
   }
+
+  DEBUG_PKT("RECV", buf, 8);
 
   uint8_t type = buf[0] & 0xf0;
   DEBUG("Frame type: 0x%x", type);
@@ -266,6 +273,7 @@ mbe_error mbe_recv() {
         if (CAN.readMsgBuf(&lens[n], bufs[n]) != CAN_OK) {
           break;
         }
+        DEBUG_PKT("RECV", bufs[n], 8);
         if ((bufs[n][0] & 0xf0) != ISOTP_FRAME_CONSECUTIVE) {
           DEBUG("Invalid consecutive frame type: 0x%x", bufs[n][0] & 0xf0);
           return MBE_RECV_BAD_HEADER;
@@ -308,10 +316,10 @@ void mbe_flush() {
     uint8_t len;
     uint8_t buf[8];
     if (CAN.readMsgBuf(&len, buf) == CAN_OK) {
-      DEBUG_PKT("FLUSH", buf, 8);
+      // DEBUG_PKT("FLUSH", buf, 8);
       flushed++;
     }    
-    delay(1);
+    //delay(1);
   }
   if (flushed > 0) {
     DEBUG_MSG("Flushed messages");

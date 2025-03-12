@@ -1,3 +1,4 @@
+#include <Arduino.h>
 #include "mbe.h"
 #include "poll.h"
 
@@ -28,11 +29,11 @@ void setup() {
   char ver[32];
   mbe_error err = mbe_version(ver, 32);
   if (err != MBE_OK) {
-    Serial.print("MBE version fail ");
+    Serial.print("MBE version fail");
     Serial.println(mbe_error_text(err));
-    // while(1) {
-    //   delay(1000);
-    // }
+     while(1) { //you're fucked
+       delay(1000);
+    }
     return;
   }
 
@@ -46,6 +47,7 @@ void loop() {
 }
 
 void update() {
+  Serial.println("looop");
   long t = millis();
   if (t - last_update_millis < UPDATE_INTERVAL_MILLIS) {
     return;
@@ -58,7 +60,7 @@ void update() {
     Serial.println("Poll failed");
     Serial.println("");
     Serial.println(mbe_error_text(err));
-    delay(10);  
+    delay(1000);  
     return;// puase a second and then restart loop
   }
 
