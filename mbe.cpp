@@ -2,9 +2,11 @@
 #include <mcp_canbus.h>
 #include "mbe.h"
 
+#define DEBUG(msg, ...) Serial.printf("[MBE] " msg "\n", ##__VA_ARGS__)
+
 #define DEBUG_PKT(msg, buf, len) ({\
-        Serial.printf(__FILE__ ":%d %s: ", __LINE__, msg);\
-        for (size_t _i=0; _i<len; _i++) {\
+        Serial.printf("[MBE] " msg " ");\
+        for (size_t _i=0; _i<len; _i++) {\  
           Serial.printf("%02x ", buf[_i]);\
         }\
         Serial.println("");\
@@ -70,7 +72,6 @@ static uint8_t mbe_data[MBE_MAX_MESSAGE_SIZE] = { 0 };
 static size_t mbe_data_len = 0;
 
 // Add debug message helper
-#define DEBUG(msg, ...) Serial.printf("[MBE] " msg "\n", ##__VA_ARGS__)
 
 mbe_error mbe_init() {
   DEBUG("Initializing CAN bus at %d kbps", MBE_CAN_RATE);
@@ -229,13 +230,13 @@ mbe_error mbe_recv() {
     DEBUG("Read failed");
     return MBE_RECV_ERROR;
   }
+
   DEBUG_PKT("RECV", buf, 8);
+
   if (len < 2) {
     DEBUG("Invalid length: %d", len);
     return MBE_RECV_INVALID;
   }
-
-  DEBUG_PKT("RECV", buf, 8);
 
   uint8_t type = buf[0] & 0xf0;
   DEBUG("Frame type: 0x%x", type);
@@ -271,6 +272,7 @@ mbe_error mbe_recv() {
       }
       for (int n=0; n<8; n++) {
         if (CAN.readMsgBuf(&lens[n], bufs[n]) != CAN_OK) {
+          DEBUG("something went wrong");        
           break;
         }
         DEBUG_PKT("RECV", bufs[n], 8);
