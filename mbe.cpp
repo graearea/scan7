@@ -6,7 +6,7 @@
 
 #define DEBUG_PKT(msg, buf, len) ({\
         Serial.printf("[MBE] " msg " ");\
-        for (size_t _i=0; _i<len; _i++) {\  
+        for (size_t _i=0; _i<len; _i++) {\
           Serial.printf("%02x ", buf[_i]);\
         }\
         Serial.println("");\
@@ -88,6 +88,8 @@ mbe_error mbe_init() {
   DEBUG("Setting up masks and filters");
   CAN.init_Mask(0, 1, MBE_ID_ECU);
   CAN.init_Filt(0, 1, MBE_ID_MASK);
+  CAN.init_Mask(1, 1, MBE_ID_ECU);
+  CAN.init_Filt(1, 1, MBE_ID_MASK);
   DEBUG("Init complete");
 
   return MBE_OK;
@@ -246,8 +248,8 @@ mbe_error mbe_recv() {
     memcpy(mbe_data, &buf[1], mbe_data_len);
     DEBUG("Single frame received, length: %d", mbe_data_len);
     return MBE_OK;
-  } 
-  
+  }
+
   if (type != ISOTP_FRAME_FIRST) {
     DEBUG("Invalid frame type: 0x%x", type);
     return MBE_RECV_BAD_HEADER;
@@ -272,7 +274,7 @@ mbe_error mbe_recv() {
       }
       for (int n=0; n<8; n++) {
         if (CAN.readMsgBuf(&lens[n], bufs[n]) != CAN_OK) {
-          DEBUG("something went wrong");        
+          DEBUG("something went wrong");
           break;
         }
         DEBUG_PKT("RECV", bufs[n], 8);
@@ -320,7 +322,7 @@ void mbe_flush() {
     if (CAN.readMsgBuf(&len, buf) == CAN_OK) {
       // DEBUG_PKT("FLUSH", buf, 8);
       flushed++;
-    }    
+    }
     //delay(1);
   }
   if (flushed > 0) {
